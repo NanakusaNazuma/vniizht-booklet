@@ -1,0 +1,97 @@
+/* Стили страниц книги — PDF-векторный рендер + persona. */
+
+.slide-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+}
+
+.slide-page__motion {
+  width: 100%;
+  height: 100%;
+}
+
+.pdf-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  overflow: hidden;
+}
+
+.pdf-slide.is-hidden {
+  visibility: hidden;
+}
+
+.pdf-slide__canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  /* чёткий canvas без сглаживания «мыла» при CSS-скейле */
+  image-rendering: auto;
+  transition: opacity 0.25s ease;
+}
+
+.pdf-slide__loader {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(21, 66, 176, 0.08),
+    rgba(255, 255, 255, 0.2)
+  );
+  background-size: 200% 100%;
+  animation: pdf-shimmer 1.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.pdf-slide__error {
+  padding: 16px;
+  color: #e30613;
+  font-size: 14px;
+  text-align: center;
+}
+
+@keyframes pdf-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.letter {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #1542b0;
+  overflow: hidden;
+}
+
+.letter__pdf {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.letter__person {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2;
+  will-change: top, left, width, height, opacity;
+}
+
+.person__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}

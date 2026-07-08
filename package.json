@@ -1,0 +1,29 @@
+{
+  "name": "vniizht-booklet",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Интерактивный веб-буклет АО «ВНИИЖТ» — макет сайта с QR-кодом и анимированным перелистыванием.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx"
+  },
+  "dependencies": {
+    "framer-motion": "^11.3.19",
+    "pdfjs-dist": "^4.8.69",
+    "qrcode.react": "^4.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-pageflip": "^2.0.3",
+    "react-router-dom": "^6.26.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.4",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2"
+  }
+}

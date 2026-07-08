@@ -1,0 +1,211 @@
+.booklet {
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 700px at 50% -10%, #14315f 0%, transparent 55%),
+    linear-gradient(180deg, #0b1f3a 0%, #081428 100%);
+  color: #fff;
+}
+
+.booklet__bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.booklet__brand {
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+.booklet__stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 12px;
+}
+
+.booklet__book-wrap {
+  flex: 0 0 auto;
+  max-width: 100%;
+  /* тень без blur-фильтра — filter + PNG часто даёт мыльность на экране */
+  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.5);
+}
+
+.flipbook {
+  touch-action: pan-y;
+}
+
+.booklet__nav {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.booklet__nav:hover:not(:disabled) {
+  background: var(--accent);
+  transform: scale(1.06);
+}
+
+.booklet__nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.booklet__footer {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px 14px;
+}
+
+.booklet__counter {
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.booklet__hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+/* ---------- Общий вид страницы ---------- */
+.page {
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.page--dark {
+  background:
+    radial-gradient(700px 500px at 30% 0%, #163a70 0%, transparent 60%),
+    linear-gradient(160deg, #0b1f3a 0%, #06101f 100%);
+  color: #fff;
+}
+
+.page__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ---------- Планшеты ---------- */
+@media (max-width: 900px) {
+  .booklet__bar {
+    padding: 10px 12px;
+  }
+
+  .booklet__brand {
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+
+  .booklet__stage {
+    gap: 10px;
+    padding: 6px 8px;
+  }
+
+  .booklet__nav {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+}
+
+/* ---------- Телефоны ---------- */
+@media (max-width: 640px) {
+  .booklet__bar {
+    padding: 8px 10px;
+  }
+
+  .booklet__back,
+  .booklet__download {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  .booklet__brand {
+    display: none; /* освобождаем место под кнопки */
+  }
+
+  .booklet__stage {
+    gap: 4px;
+    padding: 4px 4px;
+  }
+
+  .booklet__nav {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  .booklet__footer {
+    padding: 8px 10px 12px;
+  }
+
+  .booklet__hint {
+    font-size: 11px;
+    max-width: 280px;
+  }
+
+  .booklet__book-wrap {
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* ---------- Узкий landscape (телефон горизонтально) ---------- */
+@media (max-height: 520px) and (orientation: landscape) {
+  .booklet__bar {
+    padding: 4px 10px;
+  }
+
+  .booklet__footer {
+    padding: 4px 10px 8px;
+  }
+
+  .booklet__hint {
+    display: none;
+  }
+
+  .booklet__stage {
+    padding: 2px 6px;
+  }
+
+  .booklet__nav {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* ---------- Крупные мониторы: книга остаётся в «книжных» пропорциях ---------- */
+@media (min-width: 1400px) {
+  .booklet__stage {
+    padding: 12px 24px;
+  }
+}

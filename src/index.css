@@ -1,0 +1,60 @@
+:root {
+  /* Фирменная палитра ВНИИЖТ / РЖД */
+  --navy: #0b1f3a;
+  --navy-2: #12305c;
+  --navy-3: #1c4b8f;
+  --accent: #e30613; /* железнодорожный красный */
+  --accent-2: #ff3b2f;
+  --paper: #ffffff;
+  --paper-soft: #f4f7fb;
+  --ink: #0b1f3a;
+  --ink-soft: #3a4a63;
+  --muted: #7b8aa3;
+
+  --font-sans: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --radius: 16px;
+  --shadow-soft: 0 10px 40px rgba(6, 19, 41, 0.18);
+  --shadow-strong: 0 24px 70px rgba(6, 19, 41, 0.35);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--navy);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
