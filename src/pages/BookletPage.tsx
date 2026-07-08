@@ -98,16 +98,28 @@ export default function BookletPage() {
             key={`${dims.w}x${dims.h}`}
             ref={bookRef}
             className="flipbook"
+            style={{}}
             width={dims.w}
             height={dims.h}
             size="fixed"
+            minWidth={dims.w}
+            maxWidth={dims.w}
+            minHeight={dims.h}
+            maxHeight={dims.h}
             drawShadow={!isMobile}
             flippingTime={isMobile ? 600 : 800}
             maxShadowOpacity={0.45}
             showCover={false}
             usePortrait
             startPage={current}
+            startZIndex={0}
+            autoSize
             mobileScrollSupport
+            clickEventForward
+            useMouseEvents
+            swipeDistance={30}
+            showPageCorners
+            disableFlipByClick={false}
             onFlip={onFlip}
           >
             <Page>
