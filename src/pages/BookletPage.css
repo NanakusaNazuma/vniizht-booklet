@@ -14,7 +14,8 @@
 .booklet__bar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 12px;
   flex: 0 0 auto;
   padding: 10px 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -24,6 +25,84 @@
   font-weight: 800;
   letter-spacing: 3px;
   text-align: center;
+  flex: 1;
+}
+
+.booklet__fs-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.booklet__fs-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.booklet__fs-btn:active {
+  transform: scale(0.96);
+}
+
+.booklet__fs-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.booklet__footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.booklet__fs-btn--footer {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+/* Полноэкранный режим — книга на максимум, чётче и удобнее листать */
+.booklet--fullscreen {
+  background: #050d18;
+}
+
+.booklet--fullscreen .booklet__bar {
+  display: none;
+}
+
+.booklet--fullscreen .booklet__stage {
+  padding: 4px;
+  gap: 8px;
+}
+
+.booklet--fullscreen .booklet__book-wrap {
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+}
+
+.booklet--fullscreen .booklet__footer {
+  padding: 6px 12px 10px;
+  background: linear-gradient(0deg, rgba(5, 13, 24, 0.95) 0%, transparent 100%);
+}
+
+.booklet--zoomed .flipbook {
+  pointer-events: none;
+}
+
+.booklet--zoomed .zoom-page,
+.booklet--zoomed .zoom-page__controls,
+.booklet--zoomed .booklet__nav {
+  pointer-events: auto;
 }
 
 .booklet__stage {
@@ -44,7 +123,11 @@
 }
 
 .flipbook {
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
+}
+
+.zoom-page--zoomed {
+  touch-action: none;
 }
 
 .booklet__nav {
@@ -172,6 +255,20 @@
   .booklet__hint {
     font-size: 11px;
     max-width: 280px;
+  }
+
+  .booklet__footer-row {
+    gap: 10px;
+  }
+
+  .booklet__fs-label {
+    display: none;
+  }
+
+  .booklet--fullscreen .booklet__nav {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
   }
 
   .booklet__book-wrap {

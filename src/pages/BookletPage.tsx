@@ -4,6 +4,7 @@ import HTMLFlipBook from 'react-pageflip';
 import Page from '../components/book/Page';
 import LetterPage from '../components/book/pages/LetterPage';
 import SlidePage from '../components/book/pages/SlidePage';
+import { BookInteractionProvider, useBookInteraction } from '../context/BookInteractionContext';
 import { BookPageSizeProvider } from '../context/BookPageSizeContext';
 import { SLIDE_RATIO, TOTAL_SLIDES } from '../data/slides';
 import { useSlidePreload } from '../hooks/useSlidePreload';
@@ -25,24 +26,46 @@ function useIsNarrow(breakpoint = 640) {
   return narrow;
 }
 
-export default function BookletPage() {
+function BookletView() {
   const bookRef = useRef<any>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
   const [dims, setDims] = useState({ w: 450, h: 636 });
+  const [fullscreen, setFullscreen] = useState(false);
   const isMobile = useIsNarrow(640);
+  const { flipLocked } = useBookInteraction();
   useSlidePreload(current);
 
-  // Книга во весь экран с пропорцией слайда; на телефоне стрелки уже — больше места под контент.
+  const zoomEnabled = isMobile || fullscreen;
+
   useLayoutEffect(() => {
     function calc() {
       const stage = stageRef.current;
       if (!stage) return;
       const narrow = window.innerWidth <= 640;
       const short = window.innerHeight <= 520;
-      const reservedForNav = narrow ? 88 : short ? 100 : 168;
-      const availW = Math.max(200, stage.clientWidth - reservedForNav);
-      const availH = Math.max(280, stage.clientHeight - 8);
+      const fs = !!document.fullscreenElement;
+
+      const vw = window.visualViewport?.width ?? window.innerWidth;
+      const vh = window.visualViewport?.height ?? window.innerHeight;
+
+      let reservedForNav: number;
+      let reservedVertical: number;
+
+      if (fs) {
+        reservedForNav = narrow ? 8 : short ? 100 : 168;
+        reservedVertical = narrow ? 52 : 72;
+      } else {
+        reservedForNav = narrow ? 88 : short ? 100 : 168;
+        reservedVertical = narrow ? 64 : 88;
+      }
+
+      const stageW = fs ? vw : stage.clientWidth;
+      const stageH = fs ? vh : stage.clientHeight;
+
+      const availW = Math.max(200, stageW - reservedForNav);
+      const availH = Math.max(280, stageH - reservedVertical);
 
       let h = availH;
       let w = h * SLIDE_RATIO;
@@ -51,20 +74,26 @@ export default function BookletPage() {
         h = w / SLIDE_RATIO;
       }
 
-      // Целые CSS-пиксели — меньше субпиксельного размытия
       setDims({ w: Math.floor(w), h: Math.floor(h) });
     }
 
     calc();
     window.addEventListener('resize', calc);
     window.addEventListener('orientationchange', calc);
-    // visualViewport — корректнее на iOS при появлении/скрытии URL-бара
     window.visualViewport?.addEventListener('resize', calc);
+    document.addEventListener('fullscreenchange', calc);
     return () => {
       window.removeEventListener('resize', calc);
       window.removeEventListener('orientationchange', calc);
       window.visualViewport?.removeEventListener('resize', calc);
+      document.removeEventListener('fullscreenchange', calc);
     };
+  }, [fullscreen]);
+
+  useLayoutEffect(() => {
+    const onFsChange = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', onFsChange);
+    return () => document.removeEventListener('fullscreenchange', onFsChange);
   }, []);
 
   const onFlip = useCallback((e: { data: number }) => {
@@ -74,13 +103,39 @@ export default function BookletPage() {
   const flipPrev = () => bookRef.current?.pageFlip()?.flipPrev();
   const flipNext = () => bookRef.current?.pageFlip()?.flipNext();
 
+  const toggleFullscreen = async () => {
+    const el = rootRef.current;
+    if (!el) return;
+    try {
+      if (!document.fullscreenElement) {
+        await el.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch {
+      /* браузер мог отклонить без жеста пользователя */
+    }
+  };
+
   const restSlides = Array.from({ length: TOTAL_SLIDES - 2 }, (_, i) => i + 3);
 
   return (
-    <div className="booklet">
-      {!isMobile && (
+    <div
+      ref={rootRef}
+      className={`booklet${fullscreen ? ' booklet--fullscreen' : ''}${flipLocked ? ' booklet--zoomed' : ''}`}
+    >
+      {!isMobile && !fullscreen && (
         <header className="booklet__bar">
           <div className="booklet__brand">АО «ВНИИЖТ»</div>
+          <button
+            type="button"
+            className="booklet__fs-btn"
+            onClick={() => void toggleFullscreen()}
+            aria-label="На весь экран"
+            title="На весь экран"
+          >
+            ⛶
+          </button>
         </header>
       )}
 
@@ -88,7 +143,7 @@ export default function BookletPage() {
         <button
           className="booklet__nav booklet__nav--prev"
           onClick={flipPrev}
-          disabled={current === 0}
+          disabled={current === 0 || flipLocked}
           aria-label="Предыдущая страница"
         >
           ‹
@@ -116,20 +171,29 @@ export default function BookletPage() {
               startPage={current}
               startZIndex={0}
               autoSize={false}
-              mobileScrollSupport
+              mobileScrollSupport={!flipLocked}
               clickEventForward
-              useMouseEvents
-              swipeDistance={30}
-              showPageCorners
-              disableFlipByClick={false}
+              useMouseEvents={!flipLocked}
+              swipeDistance={flipLocked ? 9999 : 30}
+              showPageCorners={!flipLocked}
+              disableFlipByClick={isMobile || flipLocked}
               onFlip={onFlip}
             >
               <Page>
-                <SlidePage slide={1} active={current === 0} zoomKey={current} zoomEnabled={isMobile} />
+                <SlidePage
+                  slide={1}
+                  active={current === 0}
+                  zoomKey={current}
+                  zoomEnabled={zoomEnabled}
+                />
               </Page>
 
               <Page>
-                <LetterPage active={current === 1} zoomKey={current} zoomEnabled={isMobile} />
+                <LetterPage
+                  active={current === 1}
+                  zoomKey={current}
+                  zoomEnabled={zoomEnabled}
+                />
               </Page>
 
               {restSlides.map((slideNo, i) => {
@@ -140,7 +204,7 @@ export default function BookletPage() {
                       slide={slideNo}
                       active={current === index}
                       zoomKey={current}
-                      zoomEnabled={isMobile}
+                      zoomEnabled={zoomEnabled}
                     />
                   </Page>
                 );
@@ -152,7 +216,7 @@ export default function BookletPage() {
         <button
           className="booklet__nav booklet__nav--next"
           onClick={flipNext}
-          disabled={current === TOTAL_SLIDES - 1}
+          disabled={current === TOTAL_SLIDES - 1 || flipLocked}
           aria-label="Следующая страница"
         >
           ›
@@ -160,15 +224,40 @@ export default function BookletPage() {
       </div>
 
       <footer className="booklet__footer">
-        <span className="booklet__counter">
-          {current + 1} / {TOTAL_SLIDES}
-        </span>
+        <div className="booklet__footer-row">
+          <span className="booklet__counter">
+            {current + 1} / {TOTAL_SLIDES}
+          </span>
+          <button
+            type="button"
+            className="booklet__fs-btn booklet__fs-btn--footer"
+            onClick={() => void toggleFullscreen()}
+            aria-label={fullscreen ? 'Выйти из полноэкранного режима' : 'На весь экран'}
+          >
+            {fullscreen ? '✕' : '⛶'}
+            <span className="booklet__fs-label">
+              {fullscreen ? 'Свернуть' : 'На весь экран'}
+            </span>
+          </button>
+        </div>
         <span className="booklet__hint">
-          {isMobile
-            ? 'Свайп — листать · Щипок или +/− — увеличить'
-            : 'Листайте стрелками, свайпом или тяните угол страницы'}
+          {flipLocked
+            ? 'Уменьшите масштаб (−), чтобы листать дальше'
+            : fullscreen
+              ? 'Свайп по краям — листать · +/− или щипок — увеличить'
+              : isMobile
+                ? 'Свайп — листать · ⛶ — на весь экран · +/− — увеличить'
+                : 'Листайте стрелками или тяните угол страницы · ⛶ — на весь экран'}
         </span>
       </footer>
     </div>
+  );
+}
+
+export default function BookletPage() {
+  return (
+    <BookInteractionProvider>
+      <BookletView />
+    </BookInteractionProvider>
   );
 }
