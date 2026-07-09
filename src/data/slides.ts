@@ -4,9 +4,7 @@ export const TOTAL_SLIDES = 16;
 /** Пропорции слайда из presentation.xml (EMU): 7559675 × 10691813 ≈ A4. */
 export const SLIDE_RATIO = 7559675 / 10691813;
 
-/**
- * Позиция объекта persona на 2-м слайде PPTX, в % от размера слайда.
- */
+/** Позиция объекта persona на 2-м слайде PPTX, в % от размера слайда. */
 export const PERSONA_PLACEMENT = {
   left: '55.54%',
   top: '57.96%',
@@ -15,8 +13,3 @@ export const PERSONA_PLACEMENT = {
 } as const;
 
 export const PERSONA_SRC = '/person.png';
-
-/** @deprecated PNG больше не используются как основной контент страниц. */
-export function slideSrc(n: number): string {
-  return `/slides/slide-${String(n).padStart(2, '0')}.png`;
-}

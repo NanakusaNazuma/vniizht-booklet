@@ -4,6 +4,7 @@ import HTMLFlipBook from 'react-pageflip';
 import Page from '../components/book/Page';
 import LetterPage from '../components/book/pages/LetterPage';
 import SlidePage from '../components/book/pages/SlidePage';
+import { BookPageSizeProvider } from '../context/BookPageSizeContext';
 import { SLIDE_RATIO, TOTAL_SLIDES } from '../data/slides';
 import { useSlidePreload } from '../hooks/useSlidePreload';
 import './BookletPage.css';
@@ -93,53 +94,60 @@ export default function BookletPage() {
           ‹
         </button>
 
-        <div className="booklet__book-wrap" style={{ width: dims.w, height: dims.h }}>
-          <HTMLFlipBook
-            key={`${dims.w}x${dims.h}`}
-            ref={bookRef}
-            className="flipbook"
-            style={{}}
-            width={dims.w}
-            height={dims.h}
-            size="fixed"
-            minWidth={dims.w}
-            maxWidth={dims.w}
-            minHeight={dims.h}
-            maxHeight={dims.h}
-            drawShadow={!isMobile}
-            flippingTime={isMobile ? 600 : 800}
-            maxShadowOpacity={0.45}
-            showCover={false}
-            usePortrait
-            startPage={current}
-            startZIndex={0}
-            autoSize
-            mobileScrollSupport
-            clickEventForward
-            useMouseEvents
-            swipeDistance={30}
-            showPageCorners
-            disableFlipByClick={false}
-            onFlip={onFlip}
-          >
-            <Page>
-              <SlidePage slide={1} active={current === 0} />
-            </Page>
+        <BookPageSizeProvider width={dims.w} height={dims.h}>
+          <div className="booklet__book-wrap" style={{ width: dims.w, height: dims.h }}>
+            <HTMLFlipBook
+              key={`${dims.w}x${dims.h}`}
+              ref={bookRef}
+              className="flipbook"
+              style={{}}
+              width={dims.w}
+              height={dims.h}
+              size="fixed"
+              minWidth={dims.w}
+              maxWidth={dims.w}
+              minHeight={dims.h}
+              maxHeight={dims.h}
+              drawShadow={!isMobile}
+              flippingTime={isMobile ? 600 : 800}
+              maxShadowOpacity={0.45}
+              showCover={false}
+              usePortrait
+              startPage={current}
+              startZIndex={0}
+              autoSize={false}
+              mobileScrollSupport
+              clickEventForward
+              useMouseEvents
+              swipeDistance={30}
+              showPageCorners
+              disableFlipByClick={false}
+              onFlip={onFlip}
+            >
+              <Page>
+                <SlidePage slide={1} active={current === 0} zoomKey={current} zoomEnabled={isMobile} />
+              </Page>
 
-            <Page>
-              <LetterPage active={current === 1} />
-            </Page>
+              <Page>
+                <LetterPage active={current === 1} zoomKey={current} zoomEnabled={isMobile} />
+              </Page>
 
-            {restSlides.map((slideNo, i) => {
-              const index = i + 2;
-              return (
-                <Page key={slideNo}>
-                  <SlidePage slide={slideNo} active={current === index} />
-                </Page>
-              );
-            })}
-          </HTMLFlipBook>
-        </div>
+              {restSlides.map((slideNo, i) => {
+                const index = i + 2;
+                return (
+                  <Page key={slideNo}>
+                    <SlidePage
+                      slide={slideNo}
+                      active={current === index}
+                      zoomKey={current}
+                      zoomEnabled={isMobile}
+                    />
+                  </Page>
+                );
+              })}
+            </HTMLFlipBook>
+          </div>
+        </BookPageSizeProvider>
 
         <button
           className="booklet__nav booklet__nav--next"
@@ -156,7 +164,9 @@ export default function BookletPage() {
           {current + 1} / {TOTAL_SLIDES}
         </span>
         <span className="booklet__hint">
-          {isMobile ? 'Листайте свайпом' : 'Листайте стрелками, свайпом или тяните угол страницы'}
+          {isMobile
+            ? 'Свайп — листать · Щипок или +/− — увеличить'
+            : 'Листайте стрелками, свайпом или тяните угол страницы'}
         </span>
       </footer>
     </div>

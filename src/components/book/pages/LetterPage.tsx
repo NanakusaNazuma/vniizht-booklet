@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { motion, useAnimationControls, type Variants } from 'framer-motion';
 import { PERSONA_PLACEMENT, PERSONA_SRC } from '../../../data/slides';
+import ZoomablePage from '../ZoomablePage';
 import PdfSlideCanvas from './PdfSlideCanvas';
 import './pages.css';
 
 interface Props {
   active: boolean;
+  zoomKey: number;
+  zoomEnabled?: boolean;
 }
 
 /**
@@ -37,7 +40,7 @@ const personVariants: Variants = {
   },
 };
 
-export default function LetterPage({ active }: Props) {
+export default function LetterPage({ active, zoomKey, zoomEnabled }: Props) {
   const personControls = useAnimationControls();
   const [showSlide, setShowSlide] = useState(false);
   const [settle, setSettle] = useState(false);
@@ -74,14 +77,16 @@ export default function LetterPage({ active }: Props) {
 
   return (
     <div className="letter letter--pptx">
-      <motion.div
-        className="letter__pdf"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: showSlide ? 1 : 0 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <PdfSlideCanvas pageNumber={2} active={active} visible={showSlide} />
-      </motion.div>
+      <ZoomablePage resetKey={zoomKey} enabled={zoomEnabled}>
+        <motion.div
+          className="letter__pdf"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showSlide ? 1 : 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <PdfSlideCanvas pageNumber={2} active={active} visible={showSlide} />
+        </motion.div>
+      </ZoomablePage>
 
       {!settle && (
         <motion.div
