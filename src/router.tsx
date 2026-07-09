@@ -9,8 +9,9 @@ export const router = createBrowserRouter([
     element: <BookletPage />,
   },
   {
+    // Старые QR вели сюда — перенаправляем на корень (надёжнее на мобильном).
     path: '/booklet',
-    element: <BookletPage />,
+    element: <Navigate to="/" replace />,
   },
   {
     // Страница для скачивания QR-картинки (для печати на бумажный буклет).

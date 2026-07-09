@@ -11,10 +11,10 @@ export function getSiteBase(): string {
   return window.location.origin;
 }
 
-/** Ссылка, которую кодирует QR — сразу на буклет. */
+/** Ссылка для QR — корень сайта (надёжнее /booklet на мобильном интернете). */
 export function getBookletUrl(base?: string): string {
   const b = (base ?? getSiteBase()).replace(/\/$/, '');
-  return `${b}/booklet`;
+  return `${b}/`;
 }
 
 export function isLocalHost(url: string) {

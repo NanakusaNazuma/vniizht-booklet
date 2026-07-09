@@ -44,7 +44,7 @@ async function downloadQrPng(svgEl: SVGElement, filename = 'qr-booklet.png') {
 
 /**
  * Страница для печати QR на бумажный буклет.
- * Сканирование → сразу открывается /booklet с перелистыванием.
+ * Сканирование → открывается главная страница с буклетом.
  */
 export default function QrPage() {
   const [base, setBase] = useState(getSiteBase);
@@ -106,7 +106,7 @@ export default function QrPage() {
           >
             Скачать QR для печати
           </button>
-          <a className="qr-page__btn" href="/booklet">
+          <a className="qr-page__btn" href="/">
             Открыть буклет
           </a>
         </div>

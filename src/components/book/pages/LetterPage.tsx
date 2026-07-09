@@ -31,12 +31,12 @@ const personVariants: Variants = {
     left: '0%',
     width: '100%',
     height: '100%',
-    transition: { duration: 1.15, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
   },
   placed: {
     opacity: 1,
     ...PERSONA_PLACEMENT,
-    transition: { duration: 1.05, ease: [0.65, 0, 0.35, 1] },
+    transition: { duration: 0.52, ease: [0.65, 0, 0.35, 1] },
   },
 };
 
@@ -57,7 +57,7 @@ export default function LetterPage({ active, zoomKey, zoomEnabled }: Props) {
       await personControls.start('placed');
       if (cancelled) return;
       setShowSlide(true);
-      await new Promise((r) => setTimeout(r, 650));
+      await new Promise((r) => setTimeout(r, 325));
       if (cancelled) return;
       setSettle(true);
     }
@@ -82,7 +82,7 @@ export default function LetterPage({ active, zoomKey, zoomEnabled }: Props) {
           className="letter__pdf"
           initial={{ opacity: 0 }}
           animate={{ opacity: showSlide ? 1 : 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
           <PdfSlideCanvas pageNumber={2} active={active} visible={showSlide} />
         </motion.div>
